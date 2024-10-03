@@ -1,30 +1,37 @@
-'''linear regression'''
-import os  # Add this line
+from flask import Flask, jsonify
+import os
 import numpy as np
-from sklearn.metrics import r2_score
 import pandas as pd
-
-# Print the current working directory
-current_directory = os.getcwd()
-print("Current Directory:", current_directory)
-from sklearn.metrics import r2_score
-import pandas as pd
-dataset = pd.read_csv("Salary_Data.csv")
-
-X = dataset.iloc[:, :-1].values
-print(X)
-y = dataset.iloc[:, -1].values
-print(y)
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 1/3, random_state = 0)
 from sklearn.linear_model import LinearRegression
-regressor = LinearRegression()
-regressor.fit(X_train, y_train)
-y_pred = regressor.predict(X)
-print(regressor.predict([[3]]))
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
 import joblib
-acc= r2_score(y,y_pred)
-print(acc)
-joblib.dump(regressor,'regressor_joblib.sav')
 
+app = Flask(__name__)
 
+@app.route('/predict', methods=['GET'])
+def predict():
+    current_directory = os.getcwd()
+    print("Current Directory:", current_directory)
+
+    # Load the dataset
+    dataset = pd.read_csv("Salary_Data.csv")
+    X = dataset.iloc[:, :-1].values
+    y = dataset.iloc[:, -1].values
+
+    # Train the model
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1/3, random_state=0)
+    regressor = LinearRegression()
+    regressor.fit(X_train, y_train)
+
+    # Make a prediction
+    prediction = regressor.predict([[3]])
+    acc = r2_score(y, regressor.predict(X))
+
+    return jsonify({
+        "prediction": prediction[0].tolist(),
+        "r2_score": acc
+    })
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

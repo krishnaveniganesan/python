@@ -1,5 +1,7 @@
 '''linear regression'''
 import numpy as np
+current_directory = os.getcwd()
+print("Current Directory:", current_directory)
 from sklearn.metrics import r2_score
 import pandas as pd
 dataset = pd.read_csv("/workspace/cicd/Salary_Data.csv")

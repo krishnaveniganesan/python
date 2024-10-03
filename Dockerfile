@@ -5,14 +5,14 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copy the requirements file (if you have one) to the working directory
-COPY requirements.txt .
+COPY requirements.txt .  # Make sure this file exists
 
 # Install the required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application files into the container
 COPY app.py .
-COPY get.py .  # Assuming get.py is in the root directory of the cloned repo
+COPY get.py .
 
 # Expose the port that your app will run on (if applicable)
 EXPOSE 5000

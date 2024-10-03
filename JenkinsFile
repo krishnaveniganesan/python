@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_USERNAME = 'keerthiikrish'  // Your Docker Hub username
+        DOCKER_PASSWORD = 'keerthi@22'      // Your Docker Hub password
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // Clone the specified GitHub repository
+                git url: 'https://github.com/krishnaveniganesan/python', branch: 'main'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image with the build number
+                    def buildNumber = currentBuild.number
+                    def app = docker.build("keerthiikrish/python:${buildNumber}")
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Login to Docker Hub using the environment variables
+                    sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    // Push the Docker image
+                    sh "docker push keerthiikrish/python:${currentBuild.number}"
+                }
+            }
+        }
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run the Docker container
+                    // Adjust the command and options as needed
+                    sh "docker run -d -p 5000:5000 --name my_running_container keerthiikrish/python:${currentBuild.number}"
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo "Repository cloned, Docker image built as keerthiikrish/python:${currentBuild.number}, pushed successfully, and container started!"
+        }
+        failure {
+            echo 'Failed to clone the repository, build the Docker image, push it, or run the container.'
+        }
+    }
+}

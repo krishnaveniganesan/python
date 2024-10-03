@@ -14,7 +14,7 @@ WORKDIR /app
 
 # Copy the application files into the container
 COPY /workspace/app.py .
-COPY /workspace/get_post.py .
+COPY /workspace/get__post.py .
 
 # Expose a port if your app runs a web server (e.g., Flask on port 5000)
 EXPOSE 5000

@@ -13,8 +13,8 @@ WORKDIR /app
 # RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application files into the container
-COPY app.py .
-COPY get_post.py .
+COPY /workspace/app.py .
+COPY /workspace/get_post.py .
 
 # Expose a port if your app runs a web server (e.g., Flask on port 5000)
 EXPOSE 5000

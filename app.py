@@ -1,5 +1,10 @@
 '''linear regression'''
+import os  # Add this line
 import numpy as np
+from sklearn.metrics import r2_score
+import pandas as pd
+
+# Print the current working directory
 current_directory = os.getcwd()
 print("Current Directory:", current_directory)
 from sklearn.metrics import r2_score

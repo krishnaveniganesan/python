@@ -9,7 +9,7 @@ current_directory = os.getcwd()
 print("Current Directory:", current_directory)
 from sklearn.metrics import r2_score
 import pandas as pd
-dataset = pd.read_csv("/var/lib/jenkins/workspace/python/Salary_Data.csv")
+dataset = pd.read_csv("Salary_Data.csv")
 
 X = dataset.iloc[:, :-1].values
 print(X)

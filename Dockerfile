@@ -1,22 +1,20 @@
-# Use a lightweight base image with Python
+# Use the official Python image from the Docker Hub
 FROM python:3.9-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file if you have one
-# Uncomment the line below if you have a requirements.txt file
-# COPY requirements.txt .
+# Copy the requirements file (if you have one) to the working directory
+COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
-# Uncomment the line below if you have a requirements.txt file
-# RUN pip install --no-cache-dir -r requirements.txt
+# Install the required packages
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application files into the container
-COPY /workspace/app.py .
-COPY /workspace/get.py .
+COPY app.py .
+COPY get.py .  # Assuming get.py is in the root directory of the cloned repo
 
-# Expose a port if your app runs a web server (e.g., Flask on port 5000)
+# Expose the port that your app will run on (if applicable)
 EXPOSE 5000
 
 # Command to run your application

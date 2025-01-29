@@ -13,6 +13,24 @@ pipeline {
                 git url: 'https://github.com/krishnaveniganesan/python', branch: 'main'
             }
         }
+
+        stage('Install Dependencies & Run Unit Tests') {
+            steps {
+                script {
+                    // Install dependencies (e.g., if you're using pip for Python)
+                    sh 'pip install -r requirements.txt'
+                    
+                    // Run the unit tests
+                    def testResults = sh(script: 'pytest --maxfail=1 --disable-warnings -q', returnStatus: true)
+                    
+                    // Fail the pipeline if tests fail
+                    if (testResults != 0) {
+                        error "Unit tests failed. Stopping the pipeline."
+                    }
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -22,6 +40,7 @@ pipeline {
                 }
             }
         }
+
         stage('Push Docker Image') {
             steps {
                 script {
@@ -32,6 +51,7 @@ pipeline {
                 }
             }
         }
+
         stage('Run Docker Container') {
             steps {
                 script {
@@ -42,13 +62,13 @@ pipeline {
             }
         }
     }
-    
+
     post {
         success {
             echo "Repository cloned, Docker image built as keerthiikrish/python:${currentBuild.number}, pushed successfully, and container started!"
         }
         failure {
-            echo 'Failed to clone the repository, build the Docker image, push it, or run the container.'
+            echo 'Failed to clone the repository, run tests, build the Docker image, push it, or run the container.'
         }
     }
 }
